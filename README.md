@@ -20,6 +20,11 @@ Packages use the `iphoneos-arm64` architecture and `/var/jb` prefix. The tested
 device is an iPhone SE (2nd generation) on iOS 16.1.1. Each package retains its
 own compatibility and upstream license. The source repositories remain separate.
 
+Sileo requires a `Components` field in `Release` even for a flat `./` source.
+The publisher emits `Components: main` and checks this before signing. This follows
+the [Sileo source validator](https://github.com/Sileo/Sileo/blob/c9f70158a037dc76b91c450e72af2de0514dd3ee/Sileo/Backend/Repo%20Manager/RepoManager.swift#L651).
+Zebra and standard APT accepting a source do not replace that client check.
+
 Package inputs are pinned in `sources.lock.json`. The Control Bridge build
 workflow compiles its native helpers and optional tweaks from the pinned source.
 Publication validates package identity, checksums and signed APT indices before

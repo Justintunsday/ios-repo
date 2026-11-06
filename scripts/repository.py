@@ -136,7 +136,7 @@ def build_site(catalog, config, package_dir, site):
     packages = b"\n".join(stanzas) + b"\n"
     indices = {"Packages": packages, "Packages.gz": gzip.compress(packages, mtime=0), "Packages.xz": lzma.compress(packages)}
     release = {"Origin": config["origin"], "Label": config["name"], "Suite": "experimental", "Codename": "rootless",
-               "Date": format_datetime(datetime.now(timezone.utc), usegmt=True), "Architectures": config["architecture"],
+               "Date": format_datetime(datetime.now(timezone.utc), usegmt=True), "Architectures": config["architecture"], "Components": "main",
                "Description": "Rootless iOS packages maintained by Justintunsday"}
     text = encode_fields(release).decode()
     for label, algorithm in (("MD5Sum", "md5"), ("SHA256", "sha256"), ("SHA512", "sha512")):
@@ -171,6 +171,9 @@ def verify(site, catalog, config):
             raise ValueError("package checksum mismatch")
         inspect(data)
     release = fields((site / "Release").read_bytes())
+    # Sileo requires this field even for a flat ./ source (RepoManager.swift).
+    if release.get("Components") != "main" or config["architecture"] not in release.get("Architectures", "").split():
+        raise ValueError("Release is missing Sileo-compatible components or architecture")
     rows = [line.split() for line in release.get("SHA256", "").splitlines() if line.strip()]
     if len(rows) != 3 or {row[2] for row in rows} != {"Packages", "Packages.gz", "Packages.xz"}:
         raise ValueError("Release must cover every package index")

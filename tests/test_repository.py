@@ -9,7 +9,7 @@ import unittest
 from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from deb import build, inspect, members, revise_version, sha256
+from deb import build, fields, inspect, members, revise_version, sha256
 from repository import build_site, validate, verify
 
 
@@ -62,6 +62,9 @@ class RepositoryTests(unittest.TestCase):
         self.assertEqual(gzip.decompress((site / "Packages.gz").read_bytes()), (site / "Packages").read_bytes())
         self.assertIn("Example &lt;bridge&gt;", (site / "index.html").read_text())
         self.assertTrue((site / "depictions/example-bridge.html").is_file())
+        release = fields((site / "Release").read_bytes())
+        self.assertEqual(release["Components"], "main")
+        self.assertIn("iphoneos-arm64", release["Architectures"].split())
 
     def test_tampered_package_fails_before_publication(self):
         (self.packages / self.filename).write_bytes(self.body + b"tampered")
@@ -100,6 +103,22 @@ class RepositoryTests(unittest.TestCase):
         validate([item], self.config)
         with self.assertRaises(ValueError):
             validate([{**self.item, "url": self.item["url"].replace("%2B", "+")}], self.config)
+
+    def test_sileo_rejects_release_without_components_even_for_flat_source(self):
+        site = self.root / "site"
+        build_site([self.item], self.config, self.packages, site)
+        release = site / "Release"
+        release.write_text(release.read_text().replace("Components: main\n", ""))
+        with self.assertRaisesRegex(ValueError, "Sileo-compatible"):
+            verify(site, [self.item], self.config)
+
+    def test_sileo_release_must_advertise_the_package_architecture(self):
+        site = self.root / "site"
+        build_site([self.item], self.config, self.packages, site)
+        release = site / "Release"
+        release.write_text(release.read_text().replace("Architectures: iphoneos-arm64", "Architectures: iphoneos-arm"))
+        with self.assertRaisesRegex(ValueError, "Sileo-compatible"):
+            verify(site, [self.item], self.config)
 
 
 if __name__ == "__main__":
