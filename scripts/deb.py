@@ -91,13 +91,18 @@ def inspect(data, audit_payload=True):
         raise ValueError("invalid package ID")
     if audit_payload:
         forbidden = {".env", ".device-password", "server-password", "client-config.json", "auth.json", "service.json", ".ssh", ".gnupg"}
-        for info, name, body in tar_entries(archive[payloads[0]]):
+        entries = list(tar_entries(archive[payloads[0]]))
+        directories = {name for info, name, body in entries if info.isdir()}
+        for info, name, body in entries:
             if name not in ("var", "var/jb") and not name.startswith("var/jb/"):
                 raise ValueError("non-rootless payload: " + name)
             if forbidden.intersection(PurePosixPath(name).parts):
                 raise ValueError("private configuration in package")
             if info.isfile() and info.mode & 0o022:
                 raise ValueError("group/world-writable payload")
+            parents = {str(parent) for parent in PurePosixPath(name).parents if str(parent) != "."}
+            if not parents.issubset(directories):
+                raise ValueError("missing parent directory entries for: " + name)
             if info.issym():
                 target = posixpath.normpath(posixpath.join(posixpath.dirname(name), info.linkname)).lstrip("/")
                 if target != "var/jb" and not target.startswith("var/jb/"):
@@ -108,6 +113,16 @@ def inspect(data, audit_payload=True):
 def _tar(files, epoch):
     buffer = io.BytesIO()
     with tarfile.open(fileobj=buffer, mode="w", format=tarfile.GNU_FORMAT) as archive:
+        # dpkg needs directory entries to create parents on a fresh installation.
+        directories = {str(parent) for name in files for parent in PurePosixPath(name).parents if str(parent) != "."}
+        if directories.intersection(files):
+            raise ValueError("a file is also a parent directory")
+        for name in sorted(directories):
+            info = tarfile.TarInfo("./" + name)
+            info.type, info.mode, info.mtime = tarfile.DIRTYPE, 0o755, epoch
+            info.uid = info.gid = 0
+            info.uname = info.gname = "root"
+            archive.addfile(info)
         for name, (body, mode) in sorted(files.items()):
             info = tarfile.TarInfo("./" + name)
             info.size, info.mode, info.mtime = len(body), mode, epoch

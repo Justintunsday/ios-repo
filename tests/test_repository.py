@@ -1,15 +1,17 @@
 import copy
 import gzip
 import hashlib
+import io
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import sys
 import tempfile
+import tarfile
 import unittest
 from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from deb import build, fields, inspect, members, revise_version, sha256
+from deb import build, fields, inspect, members, rebuild, revise_version, sha256, tar_entries
 from repository import build_site, validate, verify
 
 
@@ -34,6 +36,28 @@ class RepositoryTests(unittest.TestCase):
         revised = revise_version(self.body, "1.0+repo.2", 1000000000)
         self.assertEqual(inspect(revised)["Version"], "1.0+repo.2")
         self.assertEqual(members(revised)["data.tar.gz"], members(self.body)["data.tar.gz"])
+
+    def test_nested_payload_includes_directories_before_files_for_fresh_dpkg_install(self):
+        seen = set()
+        entries = list(tar_entries(members(self.body)["data.tar.gz"]))
+        for info, name, body in entries:
+            self.assertTrue({str(parent) for parent in PurePosixPath(name).parents if str(parent) != "."}.issubset(seen))
+            if info.isdir():
+                self.assertEqual(info.mode, 0o755)
+                seen.add(name)
+        self.assertIn("var/jb/usr/bin", seen)
+        self.assertEqual(entries[-1][2], b"example")
+
+    def test_missing_payload_directories_are_rejected_before_publication(self):
+        archive = members(self.body)
+        buffer = io.BytesIO()
+        with tarfile.open(fileobj=buffer, mode="w") as target:
+            for info, name, body in tar_entries(archive["data.tar.gz"]):
+                if info.isfile():
+                    target.addfile(info, io.BytesIO(body))
+        archive["data.tar.gz"] = gzip.compress(buffer.getvalue(), mtime=1000000000)
+        with self.assertRaisesRegex(ValueError, "missing parent directory"):
+            inspect(rebuild(archive, 1000000000))
 
     def test_catalog_rejects_unpinned_or_unsafe_inputs(self):
         changes = [{"sha256": "bad"}, {"url": "http://example.invalid/file.deb"}, {"url": self.item["url"] + "?token=x"},
