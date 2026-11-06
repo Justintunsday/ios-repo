@@ -3,6 +3,7 @@ import gzip
 import hashlib
 import io
 import lzma
+import posixpath
 from pathlib import Path, PurePosixPath
 import re
 import tarfile
@@ -97,6 +98,10 @@ def inspect(data, audit_payload=True):
                 raise ValueError("private configuration in package")
             if info.isfile() and info.mode & 0o022:
                 raise ValueError("group/world-writable payload")
+            if info.issym():
+                target = posixpath.normpath(posixpath.join(posixpath.dirname(name), info.linkname)).lstrip("/")
+                if target != "var/jb" and not target.startswith("var/jb/"):
+                    raise ValueError("symlink escapes the rootless prefix")
     return control
 
 

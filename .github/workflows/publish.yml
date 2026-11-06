@@ -1,0 +1,82 @@
+name: Publish APT repository
+on:
+  push:
+    branches: [main]
+    paths: ['packages.json', 'repo.json', 'repo-key.*', 'scripts/repository.py', 'scripts/deb.py', 'web/**', 'tests/**', '.github/workflows/publish.yml']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - run: python -m unittest discover -s tests -v
+  build:
+    if: github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - uses: actions/configure-pages@v5
+      - name: Download pinned packages and build the site
+        run: python scripts/repository.py build
+      - name: Sign and independently verify the repository
+        env:
+          APT_SIGNING_KEY: ${{ secrets.APT_SIGNING_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export GNUPGHOME="$RUNNER_TEMP/ios-repo-gnupg"
+          mkdir -m 700 "$GNUPGHOME"
+          test -n "$APT_SIGNING_KEY"
+          printf '%s' "$APT_SIGNING_KEY" | gpg --batch --import
+          FINGERPRINT="$(python -c 'import json; print(json.load(open("repo.json"))["fingerprint"])')"
+          test "$(gpg --batch --with-colons --list-secret-keys | awk -F: '$1=="fpr" {print $10; exit}')" = "$FINGERPRINT"
+          gpg --batch --yes --local-user "$FINGERPRINT" --digest-algo SHA256 --clearsign --output _site/InRelease _site/Release
+          gpg --batch --yes --local-user "$FINGERPRINT" --digest-algo SHA256 --armor --detach-sign --output _site/Release.gpg _site/Release
+          gpgv --keyring "$PWD/repo-key.gpg" _site/InRelease
+          gpgv --keyring "$PWD/repo-key.gpg" _site/Release.gpg _site/Release
+          python scripts/repository.py verify
+      - name: Validate an isolated APT client against the generated archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          TEST_ROOT="$RUNNER_TEMP/apt-test"
+          mkdir -p "$TEST_ROOT/lists/partial" "$TEST_ROOT/cache/archives/partial" "$TEST_ROOT/empty"
+          touch "$TEST_ROOT/status"
+          printf 'deb [arch=iphoneos-arm64 signed-by=%s/repo-key.gpg] file:%s/_site ./\n' "$PWD" "$PWD" > "$TEST_ROOT/sources.list"
+          sudo apt-get -o APT::Architecture=iphoneos-arm64 -o APT::Architectures::=iphoneos-arm64 -o Dir::Etc::sourcelist="$TEST_ROOT/sources.list" -o Dir::Etc::sourceparts="$TEST_ROOT/empty" -o Dir::State::lists="$TEST_ROOT/lists" -o Dir::State::status="$TEST_ROOT/status" -o Dir::Cache="$TEST_ROOT/cache" -o APT::Sandbox::User=root update
+          sudo apt-cache -o APT::Architecture=iphoneos-arm64 -o Dir::Etc::sourcelist="$TEST_ROOT/sources.list" -o Dir::Etc::sourceparts="$TEST_ROOT/empty" -o Dir::State::lists="$TEST_ROOT/lists" -o Dir::State::status="$TEST_ROOT/status" show node26 opencode io.github.justintunsday.iosremotebridge ios-control-bridge > "$TEST_ROOT/packages.txt"
+          test "$(grep -c '^Package:' "$TEST_ROOT/packages.txt")" = 4
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
