@@ -22,9 +22,11 @@
     },
     {
       "package": "opencode",
-      "version": "2.2.5-5",
-      "url": "https://github.com/Justintunsday/opencode-ios/releases/download/v2.2.5-ios.5-node26test.8/OpenCode-iOS-rootless-node26.deb",
-      "sha256": "42b0d6b28b9a201897db7fae6cd5317bd180acd556f1e9afe7c1590483de948c"
+      "version": "2.2.5-6",
+      "url": "https://github.com/Justintunsday/opencode-ios/releases/download/v2.2.5-ios.6-node26/OpenCode-iOS-rootless-node26.deb",
+      "sha256": "8a1a3112729f7179f04594cb24dac889b2438a5fe4a26d32d2f7c3750c6dc970",
+      "source_commit": "deb21deca5c430869ef98ae5e472d004481c680e",
+      "assembly_workflow_run": 42241639200
     }
   ],
   "source_date_epoch": 1793978353
