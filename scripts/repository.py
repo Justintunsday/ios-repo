@@ -33,12 +33,12 @@ def validate(catalog, config):
             raise ValueError("unsupported package version")
         if item.get("architecture") != "iphoneos-arm64":
             raise ValueError("unsupported architecture")
-        filename = f"{package}_{version}_iphoneos-arm64.deb"
+        filename = f"{package}_{version.replace('~', '.')}_iphoneos-arm64.deb"
         if item.get("file") != filename or not re.fullmatch(r"[0-9a-f]{64}", item.get("sha256", "")):
             raise ValueError("invalid filename or checksum")
         url = urllib.parse.urlsplit(item.get("url", ""))
         if (not item.get("url", "").startswith(prefix) or url.username or url.password
-                or url.query or url.fragment or urllib.parse.unquote(url.path.rsplit("/", 1)[-1]) != filename):
+                or url.query or url.fragment or "+" in url.path or urllib.parse.unquote(url.path.rsplit("/", 1)[-1]) != filename):
             raise ValueError("package URL must refer to a pinned asset in this repository")
 
 

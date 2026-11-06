@@ -70,6 +70,10 @@ Bridge package retains its tested native payload; this distribution only revises
 its Debian package version. Build details and checksums are exposed in the source's
 `provenance.json`.
 
+Use the release API's `browser_download_url` when updating the catalog. GitHub
+normalizes `~` in asset filenames and percent-encodes `+`; the Debian version
+inside the package keeps its original value.
+
 Run local checks with `python -m unittest discover -s tests -v`. A local build can
 use `python scripts/repository.py build --packages /path/to/verified/debs`.
 

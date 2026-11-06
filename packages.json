@@ -28,7 +28,7 @@
   {
     "package": "io.github.justintunsday.iosremotebridge",
     "version": "0.1.0~dev+repo.20261106.1",
-    "file": "io.github.justintunsday.iosremotebridge_0.1.0~dev+repo.20261106.1_iphoneos-arm64.deb",
+    "file": "io.github.justintunsday.iosremotebridge_0.1.0.dev+repo.20261106.1_iphoneos-arm64.deb",
     "sha256": "10d484844ca499448ee23316dad9578c96d070631761bc247d731ecfa406fbb7",
     "bytes": 57094,
     "upstream_artifact_sha256": "991d949ad4cbd276eee50a54ef395264d5b856e2aade147c2492ec753f12e02c",
@@ -37,7 +37,7 @@
     "title": "iOSRemoteBridge",
     "category": "Screen control",
     "description": "Native screen capture and touch bridge. Owner pairing is required.",
-    "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06/io.github.justintunsday.iosremotebridge_0.1.0~dev+repo.20261106.1_iphoneos-arm64.deb",
+    "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06/io.github.justintunsday.iosremotebridge_0.1.0.dev%2Brepo.20261106.1_iphoneos-arm64.deb",
     "architecture": "iphoneos-arm64"
   },
   {
@@ -51,7 +51,7 @@
     "title": "iOS Control Bridge",
     "category": "System services",
     "description": "Settings, alarms, reminders, calendar and Live Activities through iosctl.",
-    "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06/ios-control-bridge_0.12.0+repo.1_iphoneos-arm64.deb",
+    "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06/ios-control-bridge_0.12.0%2Brepo.1_iphoneos-arm64.deb",
     "architecture": "iphoneos-arm64"
   }
 ]

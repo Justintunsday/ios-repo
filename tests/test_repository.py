@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from deb import build, inspect, members, revise_version, sha256
@@ -25,7 +26,7 @@ class RepositoryTests(unittest.TestCase):
         self.filename = "example-bridge_1.0+repo.1_iphoneos-arm64.deb"
         (self.packages / self.filename).write_bytes(self.body)
         self.item = {"package": "example-bridge", "version": "1.0+repo.1", "architecture": "iphoneos-arm64", "file": self.filename,
-                     "url": "https://github.com/Justintunsday/ios-repo/releases/download/test/" + self.filename,
+                     "url": "https://github.com/Justintunsday/ios-repo/releases/download/test/" + quote(self.filename),
                      "sha256": sha256(self.body), "title": "Example <bridge>", "description": "Fixture", "category": "Test"}
 
     def test_archive_roundtrip_and_version_revision_preserve_payload(self):
@@ -70,7 +71,7 @@ class RepositoryTests(unittest.TestCase):
     def test_binary_identity_must_match_catalog(self):
         changed = copy.deepcopy(self.item)
         changed.update(package="another-bridge", file="another-bridge_1.0+repo.1_iphoneos-arm64.deb")
-        changed["url"] = self.item["url"].rsplit("/", 1)[0] + "/" + changed["file"]
+        changed["url"] = self.item["url"].rsplit("/", 1)[0] + "/" + quote(changed["file"])
         (self.packages / changed["file"]).write_bytes(self.body)
         with self.assertRaises(ValueError):
             build_site([changed], self.config, self.packages, self.root / "site")
@@ -92,6 +93,13 @@ class RepositoryTests(unittest.TestCase):
         release.write_text(text[:start] + "SHA256:\n" + text[end:])
         with self.assertRaises(ValueError):
             verify(site, [self.item], self.config)
+
+    def test_github_asset_normalization_does_not_change_debian_version(self):
+        item = {**self.item, "version": "1.0~dev+repo.1", "file": "example-bridge_1.0.dev+repo.1_iphoneos-arm64.deb"}
+        item["url"] = self.item["url"].rsplit("/", 1)[0] + "/" + quote(item["file"])
+        validate([item], self.config)
+        with self.assertRaises(ValueError):
+            validate([{**self.item, "url": self.item["url"].replace("%2B", "+")}], self.config)
 
 
 if __name__ == "__main__":
