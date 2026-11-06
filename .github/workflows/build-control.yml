@@ -1,0 +1,29 @@
+name: Build Control Bridge package
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['sources.lock.json', 'scripts/build_control.py', 'scripts/deb.py', '.github/workflows/build-control.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Install signing tool
+        run: brew install ldid
+      - name: Build pinned source and package
+        run: python scripts/build_control.py
+      - name: Upload reviewed package inputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: control-bridge-deb
+          path: dist/
+          if-no-files-found: error

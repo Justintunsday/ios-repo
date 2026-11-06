@@ -1,0 +1,12 @@
+.local/
+_work/
+_site/
+dist/
+__pycache__/
+*.py[cod]
+*.deb
+*.pem
+*.key
+.env
+.env.*
+node_modules/
