@@ -109,6 +109,10 @@ integration tests. New package assembly and signed APT checks are recorded
 separately from earlier device acceptance; these new debs have not been installed
 on the phone as part of publication.
 
+The [bundled-skill verification record](verification/2026-11-06-bundled-skills.json)
+also confirms the deployed package versions, Control API name, OpenCode author,
+both live signatures and all four downloaded package hashes.
+
 The [2026-11-06 verification record](verification/2026-11-06.json) covers 15
 repository tests, the 160-test upstream Control Bridge run, native builds, desktop
 and mobile browser checks, both live signatures and all four live package hashes.

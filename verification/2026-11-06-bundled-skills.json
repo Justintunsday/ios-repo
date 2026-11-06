@@ -1,0 +1,144 @@
+{
+  "verified_at_utc": "2026-11-06T15:30:55.704226+00:00",
+  "repository_url": "https://justintunsday.github.io/ios-repo/",
+  "release_url": "https://github.com/Justintunsday/ios-repo/releases/tag/packages-2026.11.06.2",
+  "source_main_commits": {
+    "Justintunsday/ios-control-bridge": "518301528fd8bccac779ccf73c4e27bf623ab7fb",
+    "Justintunsday/iOSRemoteBridge": "886fc31457d91ef63468f095d73d09bacf2deb18",
+    "Justintunsday/opencode-ios": "deb21deca5c430869ef98ae5e472d004481c680e"
+  },
+  "checks": {
+    "repository_tests": 15,
+    "control_core_tests": 193,
+    "opencode_integration_tests": 69,
+    "complete_skill_payloads_matched_source": [
+      {
+        "skill": "opencode-ios",
+        "path": "/var/jb/usr/lib/opencode/skills/opencode-ios",
+        "resources": [
+          "SKILL.md",
+          "agents/openai.yaml",
+          "references/bridges.md"
+        ],
+        "matched_pinned_source": true
+      },
+      {
+        "skill": "ios-computer-use",
+        "path": "/var/jb/usr/lib/iosremotebridge/skills/ios-computer-use",
+        "resources": [
+          "SKILL.md",
+          "agents/openai.yaml",
+          "references/backend.md"
+        ],
+        "matched_pinned_source": true
+      },
+      {
+        "skill": "ios-control-bridge",
+        "path": "/var/jb/usr/lib/ios-control-bridge/skills/ios-control-bridge",
+        "resources": [
+          "README.md",
+          "SKILL.md",
+          "agents/openai.yaml",
+          "references/apps.md",
+          "references/deepseek-api.md",
+          "references/evaluation.md",
+          "references/filesystem.md",
+          "references/live-activities.md",
+          "references/private-apis.md",
+          "references/services.md",
+          "references/terminal.md",
+          "references/voice-intents.md",
+          "scripts/probe_ios.sh",
+          "scripts/test_probe.py"
+        ],
+        "matched_pinned_source": true
+      },
+      {
+        "skill": "ios-computer-use",
+        "path": "/var/jb/usr/lib/ios-control-bridge/skills/ios-computer-use",
+        "resources": [
+          "SKILL.md",
+          "agents/openai.yaml",
+          "references/backend.md"
+        ],
+        "matched_pinned_source": true
+      }
+    ],
+    "control_native_binaries_matched_manifest": 8,
+    "control_native_sources_matched_commit": true,
+    "live_signatures_verified": [
+      "InRelease",
+      "Release.gpg"
+    ],
+    "signing_fingerprint": "95AE26E999687FB1450CDB986A1C2817E9A20979",
+    "live_package_hashes_verified": 4,
+    "live_compressed_indices_verified": true,
+    "live_catalog_matches_pinned_catalog": true,
+    "control_display_name": "Control API",
+    "opencode_author": "opencode",
+    "opencode_exact_node_dependency": "firmware (>= 15.0), node26 (= 26.13.0-2)"
+  },
+  "ci": {
+    "signed_publication": 42243050791,
+    "isolated_apt_client_passed": true,
+    "control_native_build": 42242097190,
+    "remote_native_build": 42241631446,
+    "opencode_package_build": 42241639200,
+    "cross_repository_integration": 42242099866
+  },
+  "packages": [
+    {
+      "package": "node26",
+      "version": "26.13.0-2",
+      "file": "node26_26.13.0-2_iphoneos-arm64.deb",
+      "architecture": "iphoneos-arm64",
+      "bytes": 25899420,
+      "sha256": "8e9979639645fb57262653c84dd705a0fab12acf3e8e4e8b9cb5f7ef793f63b9",
+      "installation_device_verified": false,
+      "source_url": "https://github.com/Justintunsday/nodejs26-ios/releases/download/v26.13.0-2/node26_26.13.0-2_iphoneos-arm64.deb",
+      "unchanged_from_previous_repository_release": true,
+      "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06.2/node26_26.13.0-2_iphoneos-arm64.deb"
+    },
+    {
+      "package": "opencode",
+      "version": "2.2.5-6",
+      "file": "opencode_2.2.5-6_iphoneos-arm64.deb",
+      "architecture": "iphoneos-arm64",
+      "bytes": 30796480,
+      "sha256": "8a1a3112729f7179f04594cb24dac889b2438a5fe4a26d32d2f7c3750c6dc970",
+      "installation_device_verified": false,
+      "source_url": "https://github.com/Justintunsday/opencode-ios/releases/download/v2.2.5-ios.6-node26/OpenCode-iOS-rootless-node26.deb",
+      "source_commit": "deb21deca5c430869ef98ae5e472d004481c680e",
+      "assembly_workflow_run": 42241639200,
+      "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06.2/opencode_2.2.5-6_iphoneos-arm64.deb"
+    },
+    {
+      "package": "io.github.justintunsday.iosremotebridge",
+      "version": "0.1.0~dev+repo.20261106.3",
+      "file": "io.github.justintunsday.iosremotebridge_0.1.0.dev+repo.20261106.3_iphoneos-arm64.deb",
+      "architecture": "iphoneos-arm64",
+      "bytes": 67812,
+      "sha256": "a4825af2e59d96c6b8ae666311ea1437e15827063cb848a0894444584e1452d9",
+      "installation_device_verified": false,
+      "source_commit": "886fc31457d91ef63468f095d73d09bacf2deb18",
+      "assembly_workflow_run": 42241631446,
+      "upstream_artifact_sha256": "f403de070fc09cbcdc8e3b1aff99cb956e62340dd5d5cec21fa275f5c53f49d8",
+      "native_payload_unchanged": true,
+      "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06.2/io.github.justintunsday.iosremotebridge_0.1.0.dev%2Brepo.20261106.3_iphoneos-arm64.deb"
+    },
+    {
+      "package": "ios-control-bridge",
+      "version": "0.13.0+repo.1",
+      "file": "ios-control-bridge_0.13.0+repo.1_iphoneos-arm64.deb",
+      "architecture": "iphoneos-arm64",
+      "bytes": 300408,
+      "sha256": "d9a52cc03023579ac31e3bc1de8c419ecbaef6c9b53f24bc9233697242ea2afd",
+      "installation_device_verified": false,
+      "source_commit": "518301528fd8bccac779ccf73c4e27bf623ab7fb",
+      "assembly_workflow_run": 42242097190,
+      "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06.2/ios-control-bridge_0.13.0%2Brepo.1_iphoneos-arm64.deb"
+    }
+  ],
+  "new_package_device_installation_performed": false,
+  "device_verification_scope": "Earlier device acceptance is separate from this package and signed repository publication."
+}
