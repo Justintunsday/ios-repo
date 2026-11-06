@@ -53,29 +53,31 @@ def main():
         payload[target] = (Path(path).read_bytes(), mode)
     for folder in ("src", "bin", "skills", "docs", "integrations/siri"):
         for path in sorted((project / folder).rglob("*")):
-            if path.is_file() and "__pycache__" not in path.parts and path.suffix in (".py", ".md", ".json", ".sh", ".plist", ""):
+            if path.is_file() and "__pycache__" not in path.parts and path.suffix in (".py", ".md", ".json", ".yaml", ".yml", ".sh", ".plist", ""):
                 add(path, prefix + path.relative_to(project).as_posix(), 0o755 if folder == "bin" or path.suffix == ".sh" else 0o644)
     add(project / "README.md", prefix + "README.md")
-    helpers = ("icb-activities", "icb-settings", "icb-open-url", "icb-alarms", "icb-calendar", "icb-reminders", "icb-siri-language")
+    helpers = ("icb-activities", "icb-settings", "icb-open-url", "icb-alarms", "icb-calendar", "icb-reminders", "icb-siri-language", "icb-apps")
     for name in helpers:
         add(native / name, prefix + "build/native/" + name, 0o755)
-    add(native / "icb-siri-language", "var/jb/usr/local/bin/icb-siri-language", 0o755)
+    for name in ("icb-calendar", "icb-reminders", "icb-siri-language"):
+        add(native / name, "var/jb/usr/local/bin/" + name, 0o755)
+    add(native / "manifest.json", prefix + "build/native/manifest.json")
     add(shim, "var/jb/usr/lib/TweakInject/icbridge.dylib", 0o755)
     add(project / "native/ellekit/icbridge.plist", "var/jb/usr/lib/TweakInject/icbridge.plist")
     add(siri_library, prefix + "integrations/siri/NativeBridge.dylib", 0o755)
     payload["var/jb/usr/bin/iosctl"] = (b'#!/var/jb/bin/sh\nexec /var/jb/usr/bin/python3 -B /var/jb/usr/lib/ios-control-bridge/bin/iosctl "$@"\n', 0o755)
     payload["var/jb/usr/share/doc/ios-control-bridge/source.json"] = ((json.dumps({**pin, "archive_sha256": sha256(archive.read_bytes()), "new_package_installation_device_verified": False}, indent=2) + "\n").encode(), 0o644)
-    control = {"Package": pin["package"], "Name": "iOS Control Bridge", "Version": pin["version"], "Architecture": "iphoneos-arm64",
+    control = {"Package": pin["package"], "Name": "Control API", "Version": pin["version"], "Architecture": "iphoneos-arm64",
         "Maintainer": "Justintunsday <162324843+Justintunsday@users.noreply.github.com>", "Author": "Justintunsday", "Section": "Development", "Priority": "optional",
         "Depends": "firmware (= 16.1.1), python3 (>= 3.9), ellekit", "Homepage": "https://github.com/" + pin["repository"],
         "Installed-Size": str((sum(len(data) for data, _ in payload.values()) + 1023) // 1024),
-        "Description": "System-service tools for rootless iOS 16.1.1\n Fixed adapters for settings, alarms, reminders, calendar, Live Activities,\n browser, weather and Siri language. Includes the optional native Siri adapter;\n Siri/OpenCode configuration is not enabled automatically. Respring once\n to load the settings shim. Other OS builds remain unsupported."}
+        "Description": "Control API for rootless iOS 16.1.1\n Fixed adapters for apps, settings, alarms, reminders, calendar, Live Activities,\n browser, weather and Siri language, with portable skills. Includes the optional\n native Siri adapter; Siri/OpenCode configuration is not enabled automatically.\n Respring once to load the settings shim. Other OS builds remain unsupported."}
     postinst = b'''#!/var/jb/bin/sh
 set -eu
 state=/var/jb/var/run/ios-control-bridge
 if [ -L "$state" ]; then echo 'Refusing a symbolic-link IPC directory.' >&2; exit 1; fi
 if [ ! -d "$state" ]; then /var/jb/usr/bin/install -d -o mobile -g mobile -m 700 "$state"; fi
-echo 'iOS Control Bridge installed. Respring once to load the settings shim.'
+echo 'Control API installed. Respring once to load the settings shim.'
 echo 'Run iosctl capabilities. Optional Siri/OpenCode setup remains disabled.'
 '''
     data = build(control, payload, lock["source_date_epoch"], {"postinst": postinst})

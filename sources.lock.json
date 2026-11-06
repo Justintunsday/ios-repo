@@ -1,17 +1,17 @@
 {
   "control_bridge": {
     "repository": "Justintunsday/ios-control-bridge",
-    "commit": "4c0e2d14d256a66bdc0a56dc987b2f4a6b8ee22c",
+    "commit": "518301528fd8bccac779ccf73c4e27bf623ab7fb",
     "package": "ios-control-bridge",
-    "version": "0.12.0+repo.2"
+    "version": "0.13.0+repo.1"
   },
   "remote_bridge": {
     "repository": "Justintunsday/iOSRemoteBridge",
-    "commit": "9a98e3ac5b2dd784bcffd643148c9c5002517b73",
-    "workflow_run": 42036025143,
+    "commit": "886fc31457d91ef63468f095d73d09bacf2deb18",
+    "workflow_run": 42241631446,
     "artifact": "ios-rootless-deb",
     "package": "io.github.justintunsday.iosremotebridge",
-    "version": "0.1.0~dev+repo.20261106.1"
+    "version": "0.1.0~dev+repo.20261106.3"
   },
   "upstream_packages": [
     {
@@ -27,5 +27,5 @@
       "sha256": "42b0d6b28b9a201897db7fae6cd5317bd180acd556f1e9afe7c1590483de948c"
     }
   ],
-  "source_date_epoch": 1793928000
+  "source_date_epoch": 1793978353
 }

@@ -1,4 +1,4 @@
-name: Build Control Bridge package
+name: Build Control API package
 on:
   workflow_dispatch:
   push:
