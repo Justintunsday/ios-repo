@@ -7,16 +7,20 @@
   "source_format": "flat signed APT repository",
   "workflow_runs": {
     "control_bridge_package_build": 42150257565,
-    "signed_pages_publication": 42153476692
+    "signed_pages_publication": 42155331248
   },
   "checks": {
-    "repository_unit_tests": 11,
+    "repository_unit_tests": 13,
     "upstream_control_bridge_portable_tests": 160,
     "native_helpers_and_optional_tweaks_compiled": true,
     "desktop_and_375px_mobile_browser_checks": true,
     "copy_source_url_and_package_details": true,
     "live_metadata_files_downloaded": 8,
     "live_signatures_verified": ["InRelease", "Release.gpg"],
+    "sileo_release_components": "main",
+    "sileo_release_architecture": "iphoneos-arm64",
+    "sileo_release_contract_regression_tests": true,
+    "sileo_ui_refresh_verified": false,
     "all_four_live_package_sha256_values_match_catalog": true,
     "isolated_ubuntu_apt_update": true,
     "isolated_device_apt_update": true,
@@ -25,6 +29,6 @@
     "device_packages_installed_or_updated_by_verification": false
   },
   "provenance": "Binary hashes, input references and exact versions are recorded in packages.json and the deployed provenance.json.",
-  "scope": "Distribution assembly, repository integrity and APT discovery verified. A fresh installation of all four packages was not performed.",
+  "scope": "Distribution assembly, repository integrity and APT discovery verified. The live signed Release now meets Sileo's Components and architecture checks; confirmation of the Sileo UI refresh is pending. A fresh installation of all four packages was not performed.",
   "privacy": "Public package data only. No device addresses, credentials, pairing data, screenshots or signing private keys."
 }

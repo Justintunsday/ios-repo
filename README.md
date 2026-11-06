@@ -87,8 +87,10 @@ Distributed packages retain their upstream licensing and source ownership.
 
 ## Publication verification
 
-The [2026-11-06 verification record](verification/2026-11-06.json) covers 11
+The [2026-11-06 verification record](verification/2026-11-06.json) covers 13
 repository tests, the 160-test upstream Control Bridge run, native builds, desktop
 and mobile browser checks, both live signatures and all four live package hashes.
 An isolated APT client on the actual iOS device successfully updated and found
 all four package IDs without installing packages or changing its permanent sources.
+The live signed metadata also passes the Sileo-specific release field checks;
+confirmation after refreshing the source in Sileo is pending.
