@@ -7,7 +7,7 @@
   "source_format": "flat signed APT repository",
   "workflow_runs": {
     "control_bridge_package_build": 42156278027,
-    "signed_pages_publication": 42155331248
+    "signed_pages_publication": 42156790074
   },
   "checks": {
     "repository_unit_tests": 15,
@@ -29,6 +29,7 @@
     "device_packages_installed_or_updated_by_verification": true,
     "control_bridge_installation": {
       "version": "0.12.0+repo.2",
+      "live_pool_sha256_verified": true,
       "previous_version_failure": "Missing parent directory entries prevented dpkg from creating README.md on a fresh installation.",
       "dpkg_status": "install ok installed",
       "payload_files_hash_and_mode_checked": 63,
