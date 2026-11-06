@@ -14,7 +14,7 @@ a strict `signed-by` APT source. No `[trusted=yes]` override is needed for that 
 | `node26` | `26.13.0-2` | Standalone Node.js runtime; npm/npx are not bundled. |
 | `opencode` | `2.2.5-5` | OpenCode's terminal interface, with an exact Node runtime dependency. |
 | `io.github.justintunsday.iosremotebridge` | `0.1.0~dev+repo.20261106.1` | Native screen capture and touch component; owner pairing/setup required. |
-| `ios-control-bridge` | `0.12.0+repo.1` | Client-neutral system-service CLI, native helpers and settings shim. |
+| `ios-control-bridge` | `0.12.0+repo.2` | Client-neutral system-service CLI, native helpers and settings shim. |
 
 Packages use the `iphoneos-arm64` architecture and `/var/jb` prefix. The tested
 device is an iPhone SE (2nd generation) on iOS 16.1.1. Each package retains its
@@ -87,10 +87,17 @@ Distributed packages retain their upstream licensing and source ownership.
 
 ## Publication verification
 
-The [2026-11-06 verification record](verification/2026-11-06.json) covers 13
+The [2026-11-06 verification record](verification/2026-11-06.json) covers 15
 repository tests, the 160-test upstream Control Bridge run, native builds, desktop
 and mobile browser checks, both live signatures and all four live package hashes.
 An isolated APT client on the actual iOS device successfully updated and found
 all four package IDs without installing packages or changing its permanent sources.
 The live signed metadata also passes the Sileo-specific release field checks;
 confirmation after refreshing the source in Sileo is pending.
+
+Control Bridge `0.12.0+repo.2` fixes a fresh-installation failure in `repo.1`:
+the payload archive omitted directory entries, so dpkg could not create
+`usr/lib/ios-control-bridge/README.md`. The archive writer now includes parent
+directories, and publication rejects packages that omit them. The repaired package
+installed on the test device; all 63 installed file hashes and permissions,
+`iosctl capabilities`, and `siri.language.get` passed. No respring was requested.

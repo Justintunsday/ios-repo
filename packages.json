@@ -42,16 +42,18 @@
   },
   {
     "package": "ios-control-bridge",
-    "version": "0.12.0+repo.1",
-    "file": "ios-control-bridge_0.12.0+repo.1_iphoneos-arm64.deb",
-    "sha256": "8695ccd9bb9c918afbfee6926305143753c614cb97d7e5b0649ec53b2a6e9849",
-    "bytes": 234998,
+    "version": "0.12.0+repo.2",
+    "file": "ios-control-bridge_0.12.0+repo.2_iphoneos-arm64.deb",
+    "sha256": "dc8f957496ef4bf6a4294f9ac77d012cc1d228a7e884b6fe6070533421e53f83",
+    "bytes": 235422,
     "source_commit": "4c0e2d14d256a66bdc0a56dc987b2f4a6b8ee22c",
-    "assembly_workflow_run": 42150257565,
+    "assembly_workflow_run": 42156278027,
+    "installation_device_verified": true,
+    "installation_verified_build": "20B101",
     "title": "iOS Control Bridge",
     "category": "System services",
     "description": "Settings, alarms, reminders, calendar and Live Activities through iosctl.",
-    "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06/ios-control-bridge_0.12.0%2Brepo.1_iphoneos-arm64.deb",
+    "url": "https://github.com/Justintunsday/ios-repo/releases/download/packages-2026.11.06/ios-control-bridge_0.12.0%2Brepo.2_iphoneos-arm64.deb",
     "architecture": "iphoneos-arm64"
   }
 ]

@@ -84,9 +84,12 @@ def render(site, catalog, controls, config):
         if item.get("source_commit"):
             upstream += "/tree/" + item["source_commit"]
         note = "Respring once after installation to load the settings shim. Optional Siri/OpenCode setup is manual." if package == "ios-control-bridge" else ("Provision owner credentials and respring once. Remote access starts only after pairing and setup." if "iosremotebridge" in package else "Use the upstream setup guide after installation. Your own model account is required for OpenCode requests." if package == "opencode" else "Includes the iOS runtime and launcher; npm and npx are not bundled.")
+        verification = ("Package installation, iosctl capabilities and Siri language reading were verified on iPhone SE 2 with iOS 16.1.1."
+                        if item.get("installation_device_verified") else
+                        "Preview package. Source functionality was tested on iPhone SE 2 with iOS 16.1.1; this newly assembled package has not been installed as part of repository verification.")
         detail = f'''<main class="detail"><a class="back" href="../">All packages</a><header><span class="package-icon tone-{index}">{escape(symbols[index % 4])}</span><h1>{title}</h1><p>{escape(item['description'])}</p></header>
 <dl><div><dt>Version</dt><dd>{escape(item['version'])}</dd></div><div><dt>Architecture</dt><dd>iphoneos-arm64</dd></div><div><dt>Dependencies</dt><dd>{escape(control.get('Depends','None'))}</dd></div></dl>
-<p>{escape(note)}</p><p>Preview package. Source functionality was tested on iPhone SE 2 with iOS 16.1.1; this newly assembled package has not been installed as part of repository verification.</p>
+<p>{escape(note)}</p><p>{escape(verification)}</p>
 <div class="actions"><a class="button primary" href="../pool/{escape(item['file'])}">Download .deb</a><a class="button" href="{escape(upstream)}">Upstream source</a></div>
 <h2>SHA-256</h2><code class="checksum">{item['sha256']}</code></main>'''
         (site / depiction).write_text(page(item["title"], detail, "../"), encoding="utf8")

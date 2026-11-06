@@ -6,11 +6,11 @@
   "architecture": "iphoneos-arm64",
   "source_format": "flat signed APT repository",
   "workflow_runs": {
-    "control_bridge_package_build": 42150257565,
+    "control_bridge_package_build": 42156278027,
     "signed_pages_publication": 42155331248
   },
   "checks": {
-    "repository_unit_tests": 13,
+    "repository_unit_tests": 15,
     "upstream_control_bridge_portable_tests": 160,
     "native_helpers_and_optional_tweaks_compiled": true,
     "desktop_and_375px_mobile_browser_checks": true,
@@ -26,9 +26,21 @@
     "isolated_device_apt_update": true,
     "device_apt_package_ids": ["node26", "opencode", "io.github.justintunsday.iosremotebridge", "ios-control-bridge"],
     "permanent_device_sources_modified": false,
-    "device_packages_installed_or_updated_by_verification": false
+    "device_packages_installed_or_updated_by_verification": true,
+    "control_bridge_installation": {
+      "version": "0.12.0+repo.2",
+      "previous_version_failure": "Missing parent directory entries prevented dpkg from creating README.md on a fresh installation.",
+      "dpkg_status": "install ok installed",
+      "payload_files_hash_and_mode_checked": 63,
+      "payload_mismatches": 0,
+      "iosctl_version": "0.12.0",
+      "capabilities_status": "verified",
+      "catalog_operations": 32,
+      "siri_language_get_status": "verified",
+      "respring_requested": false
+    }
   },
   "provenance": "Binary hashes, input references and exact versions are recorded in packages.json and the deployed provenance.json.",
-  "scope": "Distribution assembly, repository integrity and APT discovery verified. The live signed Release now meets Sileo's Components and architecture checks; confirmation of the Sileo UI refresh is pending. A fresh installation of all four packages was not performed.",
+  "scope": "Distribution assembly, repository integrity and APT discovery verified. The live signed Release meets Sileo's Components and architecture checks; confirmation of the Sileo UI refresh is pending. Targeted repair installed Control Bridge repo.2 and verified its files, CLI and a native read operation. A fresh installation of all four packages was not performed; the settings shim was not reloaded during this repair.",
   "privacy": "Public package data only. No device addresses, credentials, pairing data, screenshots or signing private keys."
 }
